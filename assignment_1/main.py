@@ -1,6 +1,7 @@
 import pickle
 import pandas as pd
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware 
 from pydantic import BaseModel, Field
 from typing import Literal
 
@@ -49,6 +50,23 @@ app = FastAPI(
     title="Employee Attrition Prediction API",
     description="Predicts the probability of an employee leaving the company."
 )
+
+# CORS settings so the frontend (Vite dev server) can access the API from the browser
+origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 @app.post("/predict")
 def predict_attrition(data: EmployeeData):
